@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Distribuidora Aurora — Painel do Semestre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pad-top: env(safe-area-inset-top, 0px);
+  --pad-bottom: env(safe-area-inset-bottom, 0px);
+
+  --bg-0:#0c0a1e;
+  --bg-1:#141130;
+
+  --violet:#8b7bff;   --violet-soft:#8b7bffcc;
+  --pink:#ff6fb0;     --pink-soft:#ff6fb0cc;
+  --cyan:#4fd8ff;      --cyan-soft:#4fd8ffcc;
+  --amber:#ffb84f;     --amber-soft:#ffb84fcc;
+
+  --ink-0:#ffffff;
+  --ink-1:#e7e5ff;
+  --ink-2:#b6b2d9;
+  --ink-3:#8783ab;
+
+  --glass-bg: rgba(255,255,255,0.055);
+  --glass-bg-strong: rgba(255,255,255,0.09);
+  --glass-border: rgba(255,255,255,0.14);
+  --glass-border-strong: rgba(255,255,255,0.24);
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+
+  --font-display:'Sora',sans-serif;
+  --font-body:'Manrope',sans-serif;
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-padding-top: var(--pad-top); }
+html,body{ margin:0; padding:0; width:100%; overflow-x:hidden; }
+body{
+  min-height:100%;
+  padding-top: var(--pad-top);
+  padding-bottom: calc(var(--pad-bottom) + 24px);
+  background: var(--bg-0);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  position:relative;
+}
+
+/* ================= BACKGROUND ================= */
+.bg-layer{
+  position:fixed; inset:0; z-index:0; overflow:hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 8% 6%, rgba(139,123,255,0.30), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 96% 14%, rgba(255,111,176,0.22), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 30% 100%, rgba(79,216,255,0.16), transparent 60%),
+    radial-gradient(ellipse 60% 60% at 90% 90%, rgba(255,184,79,0.10), transparent 60%),
+    linear-gradient(160deg, var(--bg-0) 0%, var(--bg-1) 55%, var(--bg-0) 100%);
+}
+.bg-layer::after{
+  content:'';
+  position:absolute; inset:0;
+  opacity:.05; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.blob{
+  position:absolute; border-radius:50%; filter: blur(60px);
+  transition: transform 1.4s cubic-bezier(.2,.7,.3,1);
+  will-change: transform;
+}
+.blob1{ width:46vw; height:46vw; left:-10vw; top:-14vw; background:radial-gradient(circle, rgba(139,123,255,.55), transparent 70%); }
+.blob2{ width:40vw; height:40vw; right:-12vw; top:4vw; background:radial-gradient(circle, rgba(255,111,176,.45), transparent 70%); }
+.blob3{ width:50vw; height:50vw; left:20vw; bottom:-24vw; background:radial-gradient(circle, rgba(79,216,255,.32), transparent 70%); }
+
+/* ================= LAYOUT SHELL ================= */
+.shell{ position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:0 20px; }
+
+.topbar{
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
+  padding:26px 0 18px;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:38px; height:38px; border-radius:11px; flex:0 0 auto;
+  background:conic-gradient(from 210deg, var(--violet), var(--pink), var(--cyan), var(--violet));
+  box-shadow:0 6px 18px -6px rgba(139,123,255,.6);
+}
+.brand-text h1{
+  font-family:var(--font-display); font-size:16px; font-weight:700; margin:0; color:var(--ink-0); letter-spacing:-0.01em;
+}
+.brand-text p{ margin:1px 0 0; font-size:12px; color:var(--ink-3); }
+
+.tabs{
+  display:flex; gap:4px; background:var(--glass-bg); border:1px solid var(--glass-border);
+  padding:4px; border-radius:999px; backdrop-filter:blur(20px);
+}
+.tab-btn{
+  border:none; background:transparent; color:var(--ink-2); font-family:var(--font-body);
+  font-weight:700; font-size:13px; padding:9px 18px; border-radius:999px; cursor:pointer;
+  transition: color .25s ease, background .25s ease;
+}
+.tab-btn.active{ background:linear-gradient(135deg, var(--violet), var(--pink)); color:#fff; box-shadow:0 6px 16px -6px rgba(255,111,176,.5); }
+.tab-btn:not(.active):hover{ color:var(--ink-0); background:rgba(255,255,255,.06); }
+
+.view{ display:none; }
+.view.active{ display:block; }
+
+/* ================= ANIMATION ================= */
+@keyframes riseIn{
+  from{ opacity:0; transform:translateY(18px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.animate-in{ animation: riseIn .7s cubic-bezier(.19,1,.22,1) both; }
+
+/* ================= FILTER BAR ================= */
+.filterbar{
+  position:relative; z-index:50;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:14px 18px; margin-bottom:22px;
+  background:var(--glass-bg); border:1px solid var(--glass-border);
+  border-radius:var(--radius-md); backdrop-filter:blur(20px);
+  box-shadow:0 12px 30px -20px rgba(0,0,0,.6);
+}
+.filterbar .flabel{
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--ink-3);
+  margin-right:2px;
+}
+.msel{ position:relative; }
+.msel-btn{
+  display:flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.06); border:1px solid var(--glass-border);
+  color:var(--ink-0); font-family:var(--font-body); font-weight:600; font-size:13px;
+  padding:9px 14px; border-radius:999px; cursor:pointer; transition:.2s ease;
+  white-space:nowrap;
+}
+.msel-btn:hover{ background:rgba(255,255,255,.11); border-color:var(--glass-border-strong); }
+.msel-btn .chip-dot{ width:8px; height:8px; border-radius:50%; }
+.msel-btn .count{
+  background:rgba(255,255,255,.16); border-radius:999px; font-size:11px; padding:1px 7px; font-weight:700;
+}
+.msel-btn .caret{ font-size:10px; opacity:.7; transition:transform .2s ease; }
+.msel.open .msel-btn .caret{ transform:rotate(180deg); }
+
+.msel-panel{
+  position:absolute; top:calc(100% + 8px); left:0; z-index:40;
+  min-width:240px; max-width:300px;
+  background:#181432ee; border:1px solid var(--glass-border-strong);
+  border-radius:14px; padding:8px; backdrop-filter:blur(24px);
+  box-shadow:0 24px 60px -20px rgba(0,0,0,.7);
+  opacity:0; transform:translateY(-6px) scale(.98); pointer-events:none;
+  transition: opacity .18s ease, transform .18s ease;
+  max-height:320px; overflow-y:auto;
+}
+.msel.open .msel-panel{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+.msel-opt{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px; border-radius:9px; cursor:pointer; font-size:13px; color:var(--ink-1);
+  transition: background .15s ease;
+}
+.msel-opt:hover{ background:rgba(255,255,255,.07); }
+.msel-opt.disabled{ opacity:.32; cursor:not-allowed; pointer-events:none; }
+.msel-opt .box{
+  width:16px; height:16px; border-radius:5px; border:1.5px solid var(--glass-border-strong); flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff;
+}
+.msel-opt.checked .box{ background:linear-gradient(135deg,var(--violet),var(--pink)); border-color:transparent; }
+.msel-opt .label{ flex:1; overflow-wrap:normal; word-break:keep-all; line-height:1.3; }
+.msel-opt .swatch{ width:9px; height:9px; border-radius:50%; flex:0 0 auto; }
+.msel-clear{
+  display:block; width:100%; text-align:center; font-size:11.5px; font-weight:700; color:var(--ink-3);
+  background:none; border:none; border-top:1px solid rgba(255,255,255,.08); margin-top:6px; padding-top:8px;
+  cursor:pointer;
+}
+.msel-clear:hover{ color:var(--ink-0); }
+
+.filter-reset{
+  margin-left:auto; font-size:12.5px; font-weight:700; color:var(--ink-2);
+  background:none; border:1px solid var(--glass-border); border-radius:999px; padding:8px 14px; cursor:pointer;
+  transition:.2s ease; display:flex; align-items:center; gap:6px;
+}
+.filter-reset:hover{ color:#fff; border-color:var(--glass-border-strong); background:rgba(255,255,255,.06); }
+.filter-reset.hidden{ display:none; }
+
+/* ================= HERO ================= */
+.hero{
+  position:relative; overflow:hidden;
+  padding:38px 34px 34px;
+  border-radius:28px;
+  background: linear-gradient(135deg, rgba(139,123,255,.22), rgba(255,111,176,.14) 55%, rgba(79,216,255,.10));
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(24px);
+  box-shadow:0 30px 70px -30px rgba(80,40,160,.55), inset 0 1px 0 rgba(255,255,255,.12);
+  margin-bottom:20px;
+}
+.hero::before{
+  content:''; position:absolute; width:340px; height:340px; border-radius:50%;
+  right:-120px; top:-140px; background:radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+  pointer-events:none;
+}
+.hero-label{
+  font-size:12px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; color:var(--ink-2);
+  margin:0 0 10px;
+}
+.hero-number{
+  font-family:var(--font-display); font-weight:800; letter-spacing:-0.025em;
+  font-size:clamp(46px, 7.4vw, 92px); line-height:1; color:#fff; margin:0;
+  white-space:nowrap;
+  text-shadow: 0 6px 40px rgba(139,123,255,.35);
+  cursor:default;
+}
+.hero-sub{ margin:14px 0 0; font-size:13.5px; color:var(--ink-2); max-width:560px; line-height:1.6; }
+.hero-sub b{ color:var(--ink-0); }
+
+/* ================= KPI ROW ================= */
+.kpi-grid{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:26px;
+}
+.kpi-card{
+  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-md);
+  padding:18px 20px; backdrop-filter:blur(20px);
+  box-shadow:0 16px 34px -24px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06);
+  min-width:0;
+}
+.kpi-label{
+  font-size:10.5px; letter-spacing:.13em; text-transform:uppercase; font-weight:700; color:var(--ink-3);
+  margin-bottom:9px; display:flex; align-items:center; gap:7px;
+}
+.kpi-label .dot{ width:7px; height:7px; border-radius:50%; }
+.kpi-value{
+  font-family:var(--font-display); font-weight:700; font-size:clamp(19px,2.3vw,25px); color:var(--ink-0);
+  line-height:1.2; overflow-wrap:normal; word-break:keep-all;
+}
+.kpi-sub{ margin-top:6px; font-size:12px; color:var(--ink-3); overflow-wrap:normal; word-break:keep-all; line-height:1.4; }
+
+/* ================= CHARTS GRID ================= */
+.charts-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+}
+.chart-card{
+  position:relative;
+  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-lg);
+  padding:22px 24px 20px; backdrop-filter:blur(20px);
+  box-shadow:0 20px 44px -28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.07);
+  min-width:0; min-height:340px;
+  display:flex; flex-direction:column;
+}
+.chart-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; gap:10px;}
+.chart-title{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--ink-0); margin:0; }
+.chart-accent-tag{
+  font-size:10.5px; font-weight:700; letter-spacing:.06em; padding:4px 10px; border-radius:999px;
+}
+.chart-empty{
+  flex:1; display:flex; align-items:center; justify-content:center; text-align:center;
+  color:var(--ink-3); font-size:13px; padding:20px; line-height:1.6;
+}
+
+/* vertical bars (mes, categoria) */
+.vbars{ flex:1; display:flex; align-items:stretch; gap:10px; min-height:190px; padding-top:10px; }
+.vbar-col{ flex:1; display:flex; flex-direction:column; align-items:center; min-width:0; }
+.vbar-val{
+  font-family:var(--font-display); font-size:11.5px; font-weight:700; color:var(--ink-0);
+  margin-bottom:6px; white-space:nowrap; transition:opacity .3s ease;
+}
+.vbar-track{ width:100%; flex:1 1 auto; min-height:110px; display:flex; align-items:flex-end; }
+.vbar-fill{
+  width:100%; border-radius:8px 8px 4px 4px; min-height:3px;
+  transition: height .7s cubic-bezier(.19,1,.22,1), opacity .4s ease, filter .4s ease;
+  cursor:pointer;
+}
+.vbar-label{
+  margin-top:9px; font-size:11.5px; color:var(--ink-2); text-align:center; line-height:1.3;
+  overflow-wrap:normal; word-break:keep-all; hyphens:none;
+}
+
+/* horizontal bars (regiao, ranking) */
+.hbars{ flex:1; display:flex; flex-direction:column; gap:10px; justify-content:center; }
+.hbar-row{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+.hbar-label{
+  width:120px; flex:0 0 auto; font-size:12px; color:var(--ink-2); text-align:right; line-height:1.25;
+  overflow-wrap:normal; word-break:keep-all;
+  transition:color .3s ease, opacity .3s ease;
+}
+.hbar-track{ flex:1; height:16px; background:rgba(255,255,255,.06); border-radius:999px; overflow:hidden; position:relative; min-width:0;}
+.hbar-fill{
+  height:100%; border-radius:999px; min-width:6px;
+  transition: width .7s cubic-bezier(.19,1,.22,1), opacity .4s ease, filter .4s ease;
+}
+.hbar-val{
+  width:92px; flex:0 0 auto; font-family:var(--font-display); font-size:11.5px; font-weight:700; color:var(--ink-0);
+  transition:opacity .3s ease;
+}
+
+/* ================= TOOLTIP ================= */
+.tooltip{
+  position:fixed; z-index:200; pointer-events:none;
+  background:#151030f2; border:1px solid var(--glass-border-strong); border-radius:14px;
+  padding:12px 14px; min-width:200px; max-width:260px;
+  box-shadow:0 24px 50px -18px rgba(0,0,0,.7);
+  opacity:0; transform:translateY(6px); transition:opacity .15s ease, transform .15s ease;
+  backdrop-filter:blur(18px);
+}
+.tooltip.show{ opacity:1; transform:translateY(0); }
+.tooltip-title{ font-family:var(--font-display); font-size:13px; font-weight:700; color:#fff; margin:0 0 2px; }
+.tooltip-value{ font-size:16px; font-weight:800; font-family:var(--font-display); margin:0 0 8px; }
+.tooltip-divider{ border-top:1px solid rgba(255,255,255,.12); margin:8px 0; }
+.tooltip-row{ display:flex; justify-content:space-between; gap:10px; font-size:11.5px; color:var(--ink-2); padding:2px 0; }
+.tooltip-row b{ color:var(--ink-0); font-weight:700; }
+.tooltip-note{ font-size:11px; color:var(--ink-3); line-height:1.5; margin-top:6px; }
+
+/* ================= INSIGHTS TAB ================= */
+.insights-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:stretch; }
+.span-2{ grid-column: 1 / -1; }
+.ins-card{
+  display:flex; flex-direction:column;
+  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-lg);
+  padding:26px 28px; backdrop-filter:blur(20px);
+  box-shadow:0 20px 44px -28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.07);
+}
+.ins-list-2col{ column-count:2; column-gap:28px; }
+.ins-list-2col li{ break-inside:avoid; }
+.ins-eyebrow{
+  font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; margin-bottom:8px;
+}
+.ins-card h3{
+  font-family:var(--font-display); font-size:19px; font-weight:700; color:#fff; margin:0 0 12px; letter-spacing:-0.01em;
+}
+.ins-card p{ font-size:14px; line-height:1.75; color:var(--ink-1); margin:0 0 10px; }
+.ins-card p:last-child{ margin-bottom:0; }
+.ins-card b{ color:#fff; }
+.ins-stat-row{ display:flex; gap:14px; flex-wrap:wrap; margin:14px 0 4px; }
+.ins-stat{
+  background:rgba(255,255,255,.05); border:1px solid var(--glass-border); border-radius:12px;
+  padding:10px 14px; flex:1; min-width:130px;
+}
+.ins-stat .n{ font-family:var(--font-display); font-weight:800; font-size:19px; color:#fff; }
+.ins-stat .l{ font-size:10.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.08em; margin-top:2px; }
+.ins-list{ margin:10px 0 0; padding-left:0; list-style:none; }
+.ins-list li{
+  font-size:13.5px; color:var(--ink-1); line-height:1.6; padding:8px 0 8px 22px; position:relative;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.ins-list li:first-child{ border-top:none; }
+.ins-list li::before{
+  content:'→'; position:absolute; left:0; top:8px; color:var(--pink); font-weight:700;
+}
+.ins-side-title{
+  font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--ink-2);
+  text-transform:uppercase; letter-spacing:.08em; margin:0 0 14px;
+}
+.mini-bar-row{ display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:12px; min-width:0; }
+.mini-bars-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 28px; }
+@media (max-width:700px){ .mini-bars-grid{ grid-template-columns:1fr; } }
+.mini-bar-label{ width:98px; flex:0 0 auto; color:var(--ink-2); text-align:right; overflow-wrap:normal; word-break:keep-all; }
+.mini-bar-track{ flex:1; height:8px; background:rgba(255,255,255,.06); border-radius:999px; overflow:hidden; }
+.mini-bar-fill{ height:100%; border-radius:999px; }
+.mini-bar-val{ width:70px; flex:0 0 auto; color:#fff; font-weight:700; font-size:11.5px; }
+
+/* ================= EASTER EGG / FINISHING TOUCH ================= */
+.pulse-ring{
+  position:absolute; inset:-3px; border-radius:32px; pointer-events:none;
+  border:1px solid transparent;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,.22), transparent) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: sheen 5s ease-in-out infinite;
+}
+@keyframes sheen{ 0%,100%{ opacity:.35; } 50%{ opacity:.9; } }
+
+.credits{
+  text-align:center; font-size:11.5px; color:var(--ink-3); padding:26px 0 6px;
+}
+
+/* ================= RESPONSIVE ================= */
+.vbar-val .compact, .hbar-val .compact{ display:none; }
+
+@media (max-width:900px){
+  .kpi-grid{ grid-template-columns:repeat(2,1fr); }
+  .charts-grid{ grid-template-columns:1fr; }
+  .insights-grid{ grid-template-columns:1fr; }
+  .ins-list-2col{ column-count:1; }
+  .hero{ padding:30px 22px 26px; }
+}
+@media (max-width:560px){
+  .kpi-grid{ grid-template-columns:1fr 1fr; }
+  .hbar-label{ width:84px; font-size:11px; }
+  .hbar-val{ width:64px; font-size:10.5px; }
+  .filterbar{ padding:12px 14px; }
+  .vbar-val{ font-size:9px; }
+  .vbars{ gap:3px; }
+  .vbar-label{ font-size:9.5px; }
+  .chart-card{ padding:18px 14px 16px; }
+  .hero{ padding:24px 18px 20px; }
+  .hero-number{ font-size:clamp(26px, 8.6vw, 40px); }
+  .hero-label{ font-size:10.5px; }
+  .vbar-val .full, .hbar-val .full{ display:none; }
+  .vbar-val .compact, .hbar-val .compact{ display:inline; }
+}
+@media (max-width:420px){
+  .kpi-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="blob blob1" id="blob1"></div>
+  <div class="blob blob2" id="blob2"></div>
+  <div class="blob blob3" id="blob3"></div>
+</div>
+
+<div class="shell">
+
+  <div class="topbar animate-in">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text">
+        <h1>Distribuidora Aurora</h1>
+        <p>Painel de recebimentos · 1º semestre de 2026</p>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="painel">Painel</button>
+      <button class="tab-btn" data-tab="insights">Insights</button>
+    </div>
+  </div>
+
+  <!-- ======================= PAINEL ======================= -->
+  <div class="view active" id="view-painel">
+
+    <div class="filterbar animate-in" style="animation-delay:.05s" id="filterbar">
+      <span class="flabel">Filtrar</span>
+
+      <div class="msel" id="msel-mes">
+        <button class="msel-btn" type="button">
+          <span class="chip-dot" style="background:var(--violet)"></span>
+          <span class="msel-btn-text">Data: todas</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="msel-panel" id="panel-mes"></div>
+      </div>
+
+      <div class="msel" id="msel-regiao">
+        <button class="msel-btn" type="button">
+          <span class="chip-dot" style="background:var(--cyan)"></span>
+          <span class="msel-btn-text">Região: todas</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="msel-panel" id="panel-regiao"></div>
+      </div>
+
+      <div class="msel" id="msel-categoria">
+        <button class="msel-btn" type="button">
+          <span class="chip-dot" style="background:var(--amber)"></span>
+          <span class="msel-btn-text">Categoria: todas</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="msel-panel" id="panel-categoria"></div>
+      </div>
+
+      <div class="msel" id="msel-cliente">
+        <button class="msel-btn" type="button">
+          <span class="chip-dot" style="background:var(--pink)"></span>
+          <span class="msel-btn-text">Cliente: todos</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="msel-panel" id="panel-cliente"></div>
+      </div>
+
+      <button class="filter-reset hidden" id="btn-reset">✕ Limpar filtros</button>
+    </div>
+
+    <div class="hero animate-in" style="animation-delay:.1s" id="hero-card">
+      <div class="pulse-ring"></div>
+      <p class="hero-label">Total recebido no período filtrado</p>
+      <p class="hero-number" id="hero-total">R$ 0,00</p>
+      <p class="hero-sub" id="hero-sub">Carregando…</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card animate-in" style="animation-delay:.15s">
+        <div class="kpi-label"><span class="dot" style="background:var(--violet)"></span>Recebimentos</div>
+        <div class="kpi-value" id="kpi-count">0</div>
+        <div class="kpi-sub" id="kpi-count-sub">lançamentos no filtro</div>
+      </div>
+      <div class="kpi-card animate-in" style="animation-delay:.2s">
+        <div class="kpi-label"><span class="dot" style="background:var(--pink)"></span>Ticket médio</div>
+        <div class="kpi-value" id="kpi-ticket">R$ 0,00</div>
+        <div class="kpi-sub">valor médio por lançamento</div>
+      </div>
+      <div class="kpi-card animate-in" style="animation-delay:.25s">
+        <div class="kpi-label"><span class="dot" style="background:var(--cyan)"></span>Melhor mês</div>
+        <div class="kpi-value" id="kpi-month">—</div>
+        <div class="kpi-sub" id="kpi-month-sub">—</div>
+      </div>
+      <div class="kpi-card animate-in" style="animation-delay:.3s">
+        <div class="kpi-label"><span class="dot" style="background:var(--amber)"></span>Maior cliente</div>
+        <div class="kpi-value" id="kpi-client">—</div>
+        <div class="kpi-sub" id="kpi-client-sub">—</div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card animate-in" style="animation-delay:.35s">
+        <div class="chart-head">
+          <p class="chart-title">Caixa por mês</p>
+          <span class="chart-accent-tag" style="background:rgba(139,123,255,.18); color:var(--violet)">jan – jun</span>
+        </div>
+        <div class="vbars" id="chart-mes"></div>
+      </div>
+
+      <div class="chart-card animate-in" style="animation-delay:.4s">
+        <div class="chart-head">
+          <p class="chart-title">Caixa por região</p>
+          <span class="chart-accent-tag" style="background:rgba(79,216,255,.18); color:var(--cyan)">10 regiões</span>
+        </div>
+        <div class="hbars" id="chart-regiao"></div>
+      </div>
+
+      <div class="chart-card animate-in" style="animation-delay:.45s">
+        <div class="chart-head">
+          <p class="chart-title">Caixa por categoria</p>
+          <span class="chart-accent-tag" style="background:rgba(255,184,79,.18); color:var(--amber)">6 categorias</span>
+        </div>
+        <div class="vbars" id="chart-categoria"></div>
+      </div>
+
+      <div class="chart-card animate-in" style="animation-delay:.5s">
+        <div class="chart-head">
+          <p class="chart-title">Ranking de clientes</p>
+          <span class="chart-accent-tag" style="background:rgba(255,111,176,.18); color:var(--pink)">maior → menor</span>
+        </div>
+        <div class="hbars" id="chart-ranking"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======================= INSIGHTS ======================= -->
+  <div class="view" id="view-insights">
+        <div class="insights-grid">
+
+      <div class="ins-card animate-in span-2">
+        <p class="ins-eyebrow" style="color:var(--violet)">Ritmo do caixa</p>
+        <h3>O caixa alterna entre um piso estável e picos que estão crescendo</h3>
+        <p>Os três meses ímpares do semestre ficaram praticamente empatados — <b>R$ 130.987,82</b> em janeiro, <b>R$ 130.869,18</b> em março e <b>R$ 126.924,99</b> em maio, uma variação de menos de 3% entre eles. Já os meses pares saltam bem acima desse piso e vêm subindo: <b>R$ 197.188,52</b> em fevereiro, <b>R$ 254.905,54</b> em abril (o melhor mês do semestre) e <b>R$ 243.057,36</b> em junho.</p>
+        <p>Esse desenho de "serra" não é ruído: ele nasce quase inteiramente de dois clientes. <b>Supermercado Família</b> pagou R$ 140.020,31 em abril e R$ 100.876,46 em junho, mas <b>zerou em maio</b>; <b>Adega Ponto do Vinho</b> pagou entre R$ 23 mil e R$ 94 mil em cada mês até maio, mas <b>zerou em junho</b>. Os dois nunca ficam de fora ao mesmo tempo — e é essa alternância que sustenta o piso nos meses ímpares e empurra os pares para cima.</p>
+      </div>
+
+      <div class="ins-card animate-in">
+        <p class="ins-eyebrow" style="color:var(--cyan)">Regiões</p>
+        <h3>A "diversificação" regional é mais aparente do que real</h3>
+        <p>Nordeste/PE (27,4% do caixa) e Norte/PA (27,1%) são, juntas, mais da metade do semestre — mas cada uma dessas regiões tem <b>um único cliente</b> por trás: Nordeste/PE é inteiramente Adega Ponto do Vinho, e Norte/PA é inteiramente Supermercado Família. Região e cliente, aqui, são a mesma coisa.</p>
+        <p>Quem <b>perdeu força</b> foi Nordeste/PE: forte de janeiro a maio, caiu a zero em junho. Quem <b>puxou o resultado</b> foi Norte/PA, com os dois maiores meses do semestre (abril e junho) — mesmo tendo ficado zerada em maio.</p>
+        <div class="ins-stat-row">
+          <div class="ins-stat"><div class="n">75,6%</div><div class="l">do caixa em só 3 regiões</div></div>
+          <div class="ins-stat"><div class="n">2 de 10</div><div class="l">regiões concentram 54,5%</div></div>
+        </div>
+      </div>
+
+      <div class="ins-card animate-in">
+        <p class="ins-eyebrow" style="color:var(--amber)">Categorias</p>
+        <h3>Bebidas e Hortifruti sustentam o caixa</h3>
+        <p><b>Bebidas</b> (38,5%) e <b>Hortifruti</b> (31,0%) somam <b>69,4%</b> de tudo que entrou no semestre. Mercearia vem em seguida com 18,2%. No outro extremo, Higiene e Limpeza responde por só 1,2% — categoria residual, não uma frente de receita.</p>
+        <p style="color:var(--ink-3); font-size:12.5px;">Sudeste/SP (21,1%) é a região mais estável das três grandes — sem nenhum mês zerado.</p>
+      </div>
+
+      <div class="ins-card animate-in">
+        <p class="ins-eyebrow" style="color:var(--pink)">Concentração de clientes</p>
+        <h3>Caixa dependente de duas contas</h3>
+        <p>Adega Ponto do Vinho e Supermercado Família, sozinhas, respondem por <b>54,5%</b> de tudo que a Aurora recebeu no semestre. Ampliando para os 5 maiores clientes (de um total de 12), a concentração chega a <b>86,7%</b>.</p>
+        <div class="ins-stat-row">
+          <div class="ins-stat"><div class="n">54,5%</div><div class="l">em 2 de 12 clientes</div></div>
+          <div class="ins-stat"><div class="n">86,7%</div><div class="l">em 5 de 12 clientes</div></div>
+        </div>
+      </div>
+
+      <div class="ins-card animate-in">
+        <p class="ins-eyebrow" style="color:var(--violet)">Cadastro</p>
+        <h3>Pagadores fora do cadastro já são relevantes</h3>
+        <p><b>Emporio Vila Nova Ltda</b> (R$ 22.271,71) e <b>Mercearia São Joaquim</b> (R$ 20.567,47) somaram <b>R$ 42.839,18</b> no semestre — <b>3,95%</b> do total recebido — sem região nem categoria no cadastro. O valor ainda é pequeno, mas já é maior que 6 dos 12 clientes cadastrados.</p>
+      </div>
+
+      <div class="ins-card animate-in span-2">
+        <p class="ins-side-title" style="margin-bottom:16px;">Clientes · participação no total</p>
+        <div class="mini-bars-grid">
+        <div class="mini-bar-row">
+        <div class="mini-bar-label">Adega Ponto do Vinho</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100.0%; background:#ff6fb0"></div></div>
+        <div class="mini-bar-val">R$ 296.629</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Supermercado Familia</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:99.1%; background:#8b7bff"></div></div>
+        <div class="mini-bar-val">R$ 293.847</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Atacado Uniao Comercial</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:52.8%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 156.475</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Distribuidora Bebidas Lopes</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:40.5%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 120.151</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Rede Supermercados Mais</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:24.5%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 72.775</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Hortifruti Natural</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:14.1%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 41.911</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Mercadao Central</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:13.9%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 41.288</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Emporio Vila Nova Ltda</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:7.5%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 22.272</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Mercearia Sao Joaquim</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:6.9%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 20.567</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Rede Farmacias Popular</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:3.7%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 11.000</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Frigorifico Vale Verde</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:1.6%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 4.830</div>
+      </div>
+      <div class="mini-bar-row">
+        <div class="mini-bar-label">Comercial Amazonas</div>
+        <div class="mini-bar-track"><div class="mini-bar-fill" style="width:0.7%; background:rgba(255,255,255,.35)"></div></div>
+        <div class="mini-bar-val">R$ 2.188</div>
+      </div>
+        </div>
+      </div>
+
+      <div class="ins-card animate-in span-2" style="background:linear-gradient(135deg, rgba(139,123,255,.14), rgba(255,111,176,.10)); border-color:var(--glass-border-strong);">
+        <p class="ins-eyebrow" style="color:#fff">Recomendações</p>
+        <h3>O que eu faria com esses números</h3>
+        <ul class="ins-list ins-list-2col">
+          <li>Tratar <b>Adega Ponto do Vinho</b> e <b>Supermercado Família</b> como contas estratégicas, com acompanhamento individual de calendário de pagamento — juntas, elas praticamente definem o formato do caixa mês a mês.</li>
+          <li>Entender por que os pagamentos dessas duas contas se alternam (uma zera exatamente quando a outra paga forte). Um ajuste de calendário com qualquer uma delas suaviza a serra e deixa o caixa mais previsível.</li>
+          <li>Regularizar o cadastro de <b>Emporio Vila Nova Ltda</b> e <b>Mercearia São Joaquim</b>: valor pequeno hoje, mas 3,95% do caixa já sem rastreio de região/categoria prejudica qualquer leitura futura.</li>
+          <li>Não tratar a distribuição por região como diversificação de risco — na prática, é uma distribuição por cliente disfarçada. Vale olhar concentração por conta, não por mapa.</li>
+          <li>Higiene e Limpeza (1,2%) não parece ser uma frente prioritária; se o objetivo é crescer receita, Mercearia (18,2%, terceira categoria) tem mais espaço para ganhar peso.</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <p class="credits">Distribuidora Aurora · dados da aba Recebimentos · 1º semestre de 2026</p>
+
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const RECORDS = [{"date":"2026-01-08","month":1,"client":"Distribuidora Bebidas Lopes","value":21750.0,"payment":"Pix","region":"Sul/RS","category":"Bebidas"},{"date":"2026-01-20","month":1,"client":"Mercadao Central","value":5740.0,"payment":"TED","region":"Nordeste/CE","category":"Mercearia"},{"date":"2026-01-26","month":1,"client":"Adega Ponto do Vinho","value":11450.0,"payment":"Boleto","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-01-26","month":1,"client":"Adega Ponto do Vinho","value":12364.41,"payment":"Pix","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-01-29","month":1,"client":"Hortifruti Natural","value":8920.0,"payment":"Boleto","region":"Centro-Oeste/GO","category":"Hortifruti"},{"date":"2026-02-19","month":2,"client":"Comercial Amazonas","value":500.0,"payment":"Pix","region":"Norte/AM","category":"Higiene e Limpeza"},{"date":"2026-03-26","month":3,"client":"Distribuidora Bebidas Lopes","value":14320.0,"payment":"Pix","region":"Sul/RS","category":"Bebidas"},{"date":"2026-04-03","month":4,"client":"Adega Ponto do Vinho","value":18340.0,"payment":"TED","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-04-06","month":4,"client":"Supermercado Familia","value":69409.13,"payment":"Boleto","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-04-10","month":4,"client":"Comercial Amazonas","value":450.0,"payment":"Pix","region":"Norte/AM","category":"Higiene e Limpeza"},{"date":"2026-04-14","month":4,"client":"Hortifruti Natural","value":8891.33,"payment":"Pix","region":"Centro-Oeste/GO","category":"Hortifruti"},{"date":"2026-04-28","month":4,"client":"Distribuidora Bebidas Lopes","value":19793.9,"payment":"Boleto","region":"Sul/RS","category":"Bebidas"},{"date":"2026-05-01","month":5,"client":"Adega Ponto do Vinho","value":34070.0,"payment":"Boleto","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-05-21","month":5,"client":"Adega Ponto do Vinho","value":37894.99,"payment":"Pix","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-06-01","month":6,"client":"Rede Farmacias Popular","value":1130.0,"payment":"Boleto","region":"Sul/PR","category":"Higiene e Limpeza"},{"date":"2026-06-05","month":6,"client":"Supermercado Familia","value":13830.0,"payment":"Pix","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-06-12","month":6,"client":"Atacado Uniao Comercial","value":12447.95,"payment":"Pix","region":"Sudeste/SP","category":"Mercearia"},{"date":"2026-06-13","month":6,"client":"Supermercado Familia","value":30810.0,"payment":"Boleto","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-06-21","month":6,"client":"Atacado Uniao Comercial","value":8820.0,"payment":"Pix","region":"Sudeste/SP","category":"Mercearia"},{"date":"2026-06-27","month":6,"client":"Distribuidora Bebidas Lopes","value":43511.58,"payment":"Pix","region":"Sul/RS","category":"Bebidas"},{"date":"2026-01-13","month":1,"client":"Supermercado Familia","value":17910.0,"payment":"Boleto","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-06-18","month":6,"client":"Supermercado Familia","value":20630.0,"payment":"TED","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-02-17","month":2,"client":"Supermercado Familia","value":12990.0,"payment":"Boleto","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-04-07","month":4,"client":"Adega Ponto do Vinho","value":36220.0,"payment":"TED","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-04-28","month":4,"client":"Hortifruti Natural","value":6070.0,"payment":"Pix","region":"Centro-Oeste/GO","category":"Hortifruti"},{"date":"2026-04-10","month":4,"client":"Supermercado Familia","value":30898.49,"payment":"Boleto","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-01-13","month":1,"client":"Supermercado Familia","value":12800.0,"payment":"Pix","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-01-29","month":1,"client":"Distribuidora Bebidas Lopes","value":13755.81,"payment":"Boleto","region":"Sul/RS","category":"Bebidas"},{"date":"2026-03-03","month":3,"client":"Rede Supermercados Mais","value":13770.0,"payment":"Pix","region":"Sudeste/SP","category":"Congelados"},{"date":"2026-01-13","month":1,"client":"Rede Farmacias Popular","value":8179.8,"payment":"Boleto","region":"Sul/PR","category":"Higiene e Limpeza"},{"date":"2026-06-29","month":6,"client":"Atacado Uniao Comercial","value":8217.22,"payment":"Pix","region":"Sudeste/SP","category":"Mercearia"},{"date":"2026-03-26","month":3,"client":"Supermercado Familia","value":9250.0,"payment":"Boleto","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-02-28","month":2,"client":"Adega Ponto do Vinho","value":94000.0,"payment":"TED","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-06-08","month":6,"client":"Rede Supermercados Mais","value":18786.32,"payment":"Pix","region":"Sudeste/SP","category":"Congelados"},{"date":"2026-06-19","month":6,"client":"Mercadao Central","value":9857.83,"payment":"Pix","region":"Nordeste/CE","category":"Mercearia"},{"date":"2026-05-31","month":5,"client":"Atacado Uniao Comercial","value":28860.0,"payment":"Pix","region":"Sudeste/SP","category":"Mercearia"},{"date":"2026-02-13","month":2,"client":"Rede Supermercados Mais","value":13198.52,"payment":"Pix","region":"Sudeste/SP","category":"Congelados"},{"date":"2026-05-19","month":5,"client":"Rede Supermercados Mais","value":4170.0,"payment":"Boleto","region":"Sudeste/SP","category":"Congelados"},{"date":"2026-03-31","month":3,"client":"Adega Ponto do Vinho","value":43200.0,"payment":"TED","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-06-05","month":6,"client":"Supermercado Familia","value":22030.0,"payment":"Pix","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-03-17","month":3,"client":"Emporio Vila Nova Ltda","value":22271.71,"payment":"Boleto","region":"Não identificado","category":"Não identificado"},{"date":"2026-03-30","month":3,"client":"Mercearia Sao Joaquim","value":20567.47,"payment":"Pix","region":"Não identificado","category":"Não identificado"},{"date":"2026-03-16","month":3,"client":"Hortifruti Natural","value":7490.0,"payment":"Pix","region":"Centro-Oeste/GO","category":"Hortifruti"},{"date":"2026-04-20","month":4,"client":"Rede Supermercados Mais","value":14340.0,"payment":"Depósito","region":"Sudeste/SP","category":"Congelados"},{"date":"2026-06-26","month":6,"client":"Comercial Amazonas","value":380.0,"payment":"Depósito","region":"Norte/AM","category":"Higiene e Limpeza"},{"date":"2026-05-06","month":5,"client":"Atacado Uniao Comercial","value":21930.0,"payment":"Pix","region":"Sudeste/SP","category":"Mercearia"},{"date":"2026-02-17","month":2,"client":"Atacado Uniao Comercial","value":65960.0,"payment":"TED","region":"Sudeste/SP","category":"Mercearia"},{"date":"2026-04-10","month":4,"client":"Rede Farmacias Popular","value":1690.0,"payment":"Pix","region":"Sul/PR","category":"Higiene e Limpeza"},{"date":"2026-01-30","month":1,"client":"Comercial Amazonas","value":857.8,"payment":"Pix","region":"Norte/AM","category":"Higiene e Limpeza"},{"date":"2026-06-30","month":6,"client":"Mercadao Central","value":5190.0,"payment":"Depósito","region":"Nordeste/CE","category":"Mercearia"},{"date":"2026-01-26","month":1,"client":"Atacado Uniao Comercial","value":10240.0,"payment":"Pix","region":"Sudeste/SP","category":"Mercearia"},{"date":"2026-04-23","month":4,"client":"Adega Ponto do Vinho","value":9090.0,"payment":"Depósito","region":"Nordeste/PE","category":"Bebidas"},{"date":"2026-02-25","month":2,"client":"Hortifruti Natural","value":10540.0,"payment":"TED","region":"Centro-Oeste/GO","category":"Hortifruti"},{"date":"2026-06-28","month":6,"client":"Frigorifico Vale Verde","value":4830.0,"payment":"Pix","region":"Centro-Oeste/MT","category":"Congelados"},{"date":"2026-06-12","month":6,"client":"Rede Supermercados Mais","value":8510.0,"payment":"Boleto","region":"Sudeste/SP","category":"Congelados"},{"date":"2026-06-16","month":6,"client":"Mercadao Central","value":20500.0,"payment":"TED","region":"Nordeste/CE","category":"Mercearia"},{"date":"2026-01-29","month":1,"client":"Distribuidora Bebidas Lopes","value":7020.0,"payment":"Pix","region":"Sul/RS","category":"Bebidas"},{"date":"2026-04-15","month":4,"client":"Supermercado Familia","value":39712.69,"payment":"Pix","region":"Norte/PA","category":"Hortifruti"},{"date":"2026-06-26","month":6,"client":"Supermercado Familia","value":13576.46,"payment":"Boleto","region":"Norte/PA","category":"Hortifruti"}];
+</script>
+<script>
+/* ==========================================================================
+   Distribuidora Aurora — Painel do Semestre
+   Toda a filtragem/agregação roda em cima de RECORDS (dados reais da aba
+   Recebimentos). Nenhum número é inventado: tudo é somado a partir daqui.
+   ========================================================================== */
+
+(function(){
+  "use strict";
+
+  const MONTHS = [1,2,3,4,5,6];
+  const MONTH_NAME = {1:'Janeiro',2:'Fevereiro',3:'Março',4:'Abril',5:'Maio',6:'Junho'};
+  const MONTH_SHORT = {1:'Jan',2:'Fev',3:'Mar',4:'Abr',5:'Mai',6:'Jun'};
+
+  const COLOR = {
+    mes: '#8b7bff',
+    regiao: '#4fd8ff',
+    categoria: '#ffb84f',
+    ranking: '#ff6fb0',
+    dim: 'rgba(255,255,255,0.16)'
+  };
+
+  const fmtBRL = (v, decimals=2) => new Intl.NumberFormat('pt-BR',{
+    style:'currency', currency:'BRL', minimumFractionDigits:decimals, maximumFractionDigits:decimals
+  }).format(v);
+  const fmtInt = (v) => new Intl.NumberFormat('pt-BR').format(Math.round(v));
+  const fmtPct = (v) => v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+  // compact form for narrow screens, e.g. "R$ 131 mil" -> "R$131k"
+  const fmtCompact = (v) => {
+    const abs = Math.abs(v);
+    if(abs >= 1000){
+      const k = v/1000;
+      const s = k.toLocaleString('pt-BR', {maximumFractionDigits: abs>=10000?0:1});
+      return 'R$' + s + 'k';
+    }
+    return fmtBRL(v,0);
+  };
+  // returns markup with both a full and a compact span (CSS toggles which shows, by width)
+  const fmtBarLabel = (v) => v>0
+    ? `<span class="full">${fmtBRL(v,0)}</span><span class="compact">${fmtCompact(v)}</span>`
+    : '—';
+
+  // -------------------------------------------------------------------
+  // Precomputed static orderings (from the FULL, unfiltered dataset)
+  // -------------------------------------------------------------------
+  function sumBy(records, keyFn){
+    const map = new Map();
+    for(const r of records){
+      const k = keyFn(r);
+      map.set(k, (map.get(k)||0) + r.value);
+    }
+    return map;
+  }
+  function sortedKeysDesc(map){
+    return Array.from(map.entries()).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
+  }
+
+  const TOTAL_ALL = RECORDS.reduce((s,r)=>s+r.value,0);
+  const regionTotalsAll = sumBy(RECORDS, r=>r.region);
+  const categoryTotalsAll = sumBy(RECORDS, r=>r.category);
+  const clientTotalsAll = sumBy(RECORDS, r=>r.client);
+
+  const REGIONS_ORDER = sortedKeysDesc(regionTotalsAll);
+  const CATEGORIES_ORDER = sortedKeysDesc(categoryTotalsAll);
+  const CLIENTS_ORDER_ALL = sortedKeysDesc(clientTotalsAll);
+
+  // client -> {region, category} (each client maps to exactly one of each)
+  const CLIENT_INFO = new Map();
+  for(const r of RECORDS){
+    if(!CLIENT_INFO.has(r.client)) CLIENT_INFO.set(r.client, {region:r.region, category:r.category});
+  }
+
+  // -------------------------------------------------------------------
+  // State — four independent, cross-filtering dimensions
+  // -------------------------------------------------------------------
+  const state = {
+    selectedMonths: new Set(),
+    selectedRegions: new Set(),
+    selectedCategories: new Set(),
+    selectedClients: new Set(),
+  };
+
+  // Generic matcher: every dimension can be individually skipped (used so a
+  // chart can ignore its OWN filter while still respecting the other three).
+  function matches(r, opts={}){
+    const monthOk = opts.skipMonth || state.selectedMonths.size===0 || state.selectedMonths.has(r.month);
+    const regionOk = opts.skipRegion || state.selectedRegions.size===0 || state.selectedRegions.has(r.region);
+    const catOk = opts.skipCategory || state.selectedCategories.size===0 || state.selectedCategories.has(r.category);
+    const clientOk = opts.skipClient || state.selectedClients.size===0 || state.selectedClients.has(r.client);
+    return monthOk && regionOk && catOk && clientOk;
+  }
+  function filtered(opts){ return RECORDS.filter(r=>matches(r,opts)); }
+
+  function monthHasData(month){ return RECORDS.some(r=>r.month===month && matches(r,{skipMonth:true})); }
+  function regionHasData(region){ return RECORDS.some(r=>r.region===region && matches(r,{skipRegion:true})); }
+  function categoryHasData(category){ return RECORDS.some(r=>r.category===category && matches(r,{skipCategory:true})); }
+  function clientHasData(client){ return RECORDS.some(r=>r.client===client && matches(r,{skipClient:true})); }
+
+  // After ANY toggle, sweep every dimension and drop selections that no
+  // longer have supporting data given the other three — repeat to a fixed
+  // point (removing a filter can only loosen things, so this always
+  // converges, and the user can never land on an empty combination).
+  function reconcileAll(){
+    let changed = true, guard = 0;
+    while(changed && guard < 12){
+      changed = false; guard++;
+      for(const m of Array.from(state.selectedMonths)){
+        if(!monthHasData(m)){ state.selectedMonths.delete(m); changed = true; }
+      }
+      for(const rg of Array.from(state.selectedRegions)){
+        if(!regionHasData(rg)){ state.selectedRegions.delete(rg); changed = true; }
+      }
+      for(const c of Array.from(state.selectedCategories)){
+        if(!categoryHasData(c)){ state.selectedCategories.delete(c); changed = true; }
+      }
+      for(const cl of Array.from(state.selectedClients)){
+        if(!clientHasData(cl)){ state.selectedClients.delete(cl); changed = true; }
+      }
+    }
+  }
+
+  function toggleMonth(month){
+    if(state.selectedMonths.has(month)) state.selectedMonths.delete(month);
+    else state.selectedMonths.add(month);
+    reconcileAll();
+    renderAll();
+  }
+  function toggleRegion(region){
+    if(state.selectedRegions.has(region)) state.selectedRegions.delete(region);
+    else state.selectedRegions.add(region);
+    reconcileAll();
+    renderAll();
+  }
+  function toggleCategory(category){
+    if(state.selectedCategories.has(category)) state.selectedCategories.delete(category);
+    else state.selectedCategories.add(category);
+    reconcileAll();
+    renderAll();
+  }
+  function toggleClient(client){
+    if(state.selectedClients.has(client)) state.selectedClients.delete(client);
+    else state.selectedClients.add(client);
+    reconcileAll();
+    renderAll();
+  }
+  function clearFilters(){
+    state.selectedMonths.clear();
+    state.selectedRegions.clear();
+    state.selectedCategories.clear();
+    state.selectedClients.clear();
+    renderAll();
+  }
+
+  // -------------------------------------------------------------------
+  // Tooltip
+  // -------------------------------------------------------------------
+  const tooltipEl = document.getElementById('tooltip');
+  let tooltipRaf = null;
+  function showTooltip(evt, html){
+    tooltipEl.innerHTML = html;
+    tooltipEl.classList.add('show');
+    positionTooltip(evt);
+  }
+  function positionTooltip(evt){
+    if(tooltipRaf) cancelAnimationFrame(tooltipRaf);
+    tooltipRaf = requestAnimationFrame(()=>{
+      const pad = 16;
+      const rect = tooltipEl.getBoundingClientRect();
+      let x = evt.clientX + 18;
+      let y = evt.clientY + 18;
+      if(x + rect.width + pad > window.innerWidth) x = evt.clientX - rect.width - 18;
+      if(y + rect.height + pad > window.innerHeight) y = evt.clientY - rect.height - 18;
+      if(x < pad) x = pad;
+      if(y < pad) y = pad;
+      tooltipEl.style.left = x + 'px';
+      tooltipEl.style.top = y + 'px';
+    });
+  }
+  function hideTooltip(){ tooltipEl.classList.remove('show'); }
+
+  // -------------------------------------------------------------------
+  // Count-up animation for numbers
+  // -------------------------------------------------------------------
+  const liveValues = new WeakMap();
+  function animateValue(el, to, formatter, duration=750){
+    const from = liveValues.get(el) ?? 0;
+    liveValues.set(el, to);
+    if(el._raf) cancelAnimationFrame(el._raf);
+    const t0 = performance.now();
+    function tick(now){
+      const p = Math.min(1, (now - t0) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = from + (to - from) * eased;
+      el.textContent = formatter(val);
+      if(p < 1) el._raf = requestAnimationFrame(tick);
+    }
+    el._raf = requestAnimationFrame(tick);
+  }
+
+  // -------------------------------------------------------------------
+  // Filter dropdown UI
+  // -------------------------------------------------------------------
+  function buildFilterPanel(containerId, items, selectedSet, hasDataFn, colorVar, onToggle, labelFn){
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    items.forEach(item=>{
+      const label = labelFn ? labelFn(item) : item;
+      const isChecked = selectedSet.has(item);
+      const available = isChecked || hasDataFn(item);
+      const opt = document.createElement('div');
+      opt.className = 'msel-opt' + (isChecked?' checked':'') + (available?'':' disabled');
+      opt.innerHTML = `
+        <span class="box">${isChecked?'✓':''}</span>
+        <span class="swatch" style="background:${colorVar}"></span>
+        <span class="label">${label}</span>
+      `;
+      if(available){
+        opt.addEventListener('click', ()=> onToggle(item));
+      }
+      el.appendChild(opt);
+    });
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'msel-clear';
+    clearBtn.textContent = 'Limpar esta lista';
+    clearBtn.addEventListener('click', (e)=>{ e.stopPropagation(); selectedSet.clear(); reconcileAll(); renderAll(); });
+    el.appendChild(clearBtn);
+  }
+
+  function updateMselButtonLabel(mselId, dim, selectedSet, labelFn, allWord='todas'){
+    const btn = document.querySelector('#'+mselId+' .msel-btn-text');
+    if(selectedSet.size===0){ btn.textContent = `${dim}: ${allWord}`; return; }
+    if(selectedSet.size===1){
+      const v = Array.from(selectedSet)[0];
+      btn.textContent = `${dim}: ${labelFn ? labelFn(v) : v}`;
+      return;
+    }
+    btn.textContent = `${dim}: ${selectedSet.size} selecionad${allWord==='todos'?'os':'as'}`;
+  }
+
+  // open/close dropdown behaviour
+  document.querySelectorAll('.msel').forEach(msel=>{
+    const btn = msel.querySelector('.msel-btn');
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const wasOpen = msel.classList.contains('open');
+      document.querySelectorAll('.msel.open').forEach(m=>m.classList.remove('open'));
+      if(!wasOpen) msel.classList.add('open');
+    });
+  });
+  document.addEventListener('click', ()=>{
+    document.querySelectorAll('.msel.open').forEach(m=>m.classList.remove('open'));
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', clearFilters);
+
+  // -------------------------------------------------------------------
+  // Chart DOM builders (created once, updated on every render)
+  // -------------------------------------------------------------------
+  const monthBarRefs = {};   // month -> {fill, val, label}
+  const regionBarRefs = {};  // region -> {fill, val, label, row}
+  const categoryBarRefs = {};// category -> {fill, val, label}
+  const clientBarRefs = {};  // client -> {fill, val, label, row}
+
+  function buildMonthChartSkeleton(){
+    const wrap = document.getElementById('chart-mes');
+    wrap.innerHTML = '';
+    MONTHS.forEach(m=>{
+      const col = document.createElement('div');
+      col.className = 'vbar-col';
+      col.style.cursor = 'pointer';
+      col.innerHTML = `
+        <div class="vbar-val">R$ 0</div>
+        <div class="vbar-track"><div class="vbar-fill" style="height:0%; background:${COLOR.mes}"></div></div>
+        <div class="vbar-label">${MONTH_SHORT[m]}</div>
+      `;
+      wrap.appendChild(col);
+      const fill = col.querySelector('.vbar-fill');
+      const val = col.querySelector('.vbar-val');
+      const label = col.querySelector('.vbar-label');
+      monthBarRefs[m] = {fill, val, label, col};
+      col.addEventListener('mousemove', (e)=> onMonthHover(e, m));
+      col.addEventListener('mouseleave', hideTooltip);
+      col.addEventListener('click', ()=> toggleMonth(m));
+    });
+  }
+
+  function buildRegionChartSkeleton(){
+    const wrap = document.getElementById('chart-regiao');
+    wrap.innerHTML = '';
+    REGIONS_ORDER.forEach(region=>{
+      const row = document.createElement('div');
+      row.className = 'hbar-row';
+      row.innerHTML = `
+        <div class="hbar-label">${region}</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:0%; background:${COLOR.regiao}"></div></div>
+        <div class="hbar-val">R$ 0</div>
+      `;
+      wrap.appendChild(row);
+      const fill = row.querySelector('.hbar-fill');
+      const val = row.querySelector('.hbar-val');
+      const label = row.querySelector('.hbar-label');
+      regionBarRefs[region] = {fill, val, label, row};
+      row.addEventListener('mousemove', (e)=> onRegionHover(e, region));
+      row.addEventListener('mouseleave', hideTooltip);
+      row.addEventListener('click', ()=> toggleRegion(region));
+    });
+  }
+
+  function buildCategoryChartSkeleton(){
+    const wrap = document.getElementById('chart-categoria');
+    wrap.innerHTML = '';
+    CATEGORIES_ORDER.forEach(cat=>{
+      const col = document.createElement('div');
+      col.className = 'vbar-col';
+      col.style.cursor = 'pointer';
+      col.innerHTML = `
+        <div class="vbar-val">R$ 0</div>
+        <div class="vbar-track"><div class="vbar-fill" style="height:0%; background:${COLOR.categoria}"></div></div>
+        <div class="vbar-label">${cat}</div>
+      `;
+      wrap.appendChild(col);
+      const fill = col.querySelector('.vbar-fill');
+      const val = col.querySelector('.vbar-val');
+      const label = col.querySelector('.vbar-label');
+      categoryBarRefs[cat] = {fill, val, label, col};
+      col.addEventListener('mousemove', (e)=> onCategoryHover(e, cat));
+      col.addEventListener('mouseleave', hideTooltip);
+      col.addEventListener('click', ()=> toggleCategory(cat));
+    });
+  }
+
+  function buildRankingChartSkeleton(){
+    const wrap = document.getElementById('chart-ranking');
+    wrap.innerHTML = '';
+    CLIENTS_ORDER_ALL.forEach(client=>{
+      const row = document.createElement('div');
+      row.className = 'hbar-row';
+      row.innerHTML = `
+        <div class="hbar-label">${client}</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:0%; background:${COLOR.ranking}"></div></div>
+        <div class="hbar-val">R$ 0</div>
+      `;
+      wrap.appendChild(row);
+      const fill = row.querySelector('.hbar-fill');
+      const val = row.querySelector('.hbar-val');
+      const label = row.querySelector('.hbar-label');
+      clientBarRefs[client] = {fill, val, label, row};
+      row.addEventListener('mousemove', (e)=> onClientHover(e, client));
+      row.addEventListener('mouseleave', hideTooltip);
+      row.addEventListener('click', ()=> toggleClient(client));
+    });
+  }
+
+  // -------------------------------------------------------------------
+  // Hover content builders
+  // -------------------------------------------------------------------
+  function onMonthHover(evt, month){
+    const chartRecords = filtered({skipMonth:true});
+    const monthRecords = chartRecords.filter(r=>r.month===month);
+    const total = monthRecords.reduce((s,r)=>s+r.value,0);
+    const chartTotal = chartRecords.reduce((s,r)=>s+r.value,0);
+    const share = chartTotal>0 ? total/chartTotal*100 : 0;
+    const byClient = sumBy(monthRecords, r=>r.client);
+    const top5 = Array.from(byClient.entries()).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    let rows = top5.map(([c,v])=>`<div class="tooltip-row"><span>${c}</span><b>${fmtBRL(v,0)}</b></div>`).join('');
+    if(top5.length===0) rows = `<div class="tooltip-row"><span>Sem recebimentos neste mês, com o filtro atual.</span></div>`;
+    showTooltip(evt, `
+      <p class="tooltip-title">${MONTH_NAME[month]}</p>
+      <p class="tooltip-value" style="color:${COLOR.mes}">${fmtBRL(total)}</p>
+      <div class="tooltip-row"><span>Participação no gráfico</span><b>${fmtPct(share)}</b></div>
+      <div class="tooltip-divider"></div>
+      <div class="tooltip-note" style="margin-top:0;margin-bottom:6px;">Top clientes do mês</div>
+      ${rows}
+    `);
+  }
+
+  function onRegionHover(evt, region){
+    const records = filtered({skipRegion:true});
+    const regionRecords = records.filter(r=>r.region===region);
+    const total = regionRecords.reduce((s,r)=>s+r.value,0);
+    const chartTotal = records.reduce((s,r)=>s+r.value,0);
+    const share = chartTotal>0 ? total/chartTotal*100 : 0;
+    const byClient = sumBy(regionRecords, r=>r.client);
+    const clients = Array.from(byClient.entries()).sort((a,b)=>b[1]-a[1]);
+    let rows = clients.slice(0,4).map(([c,v])=>`<div class="tooltip-row"><span>${c}</span><b>${fmtBRL(v,0)}</b></div>`).join('');
+    if(clients.length===0) rows = `<div class="tooltip-row"><span>Sem recebimentos nesta região, com o filtro atual.</span></div>`;
+    const concNote = clients.length===1
+      ? `<div class="tooltip-note">100% desta região vem de um único cliente.</div>`
+      : '';
+    showTooltip(evt, `
+      <p class="tooltip-title">${region}</p>
+      <p class="tooltip-value" style="color:${COLOR.regiao}">${fmtBRL(total)}</p>
+      <div class="tooltip-row"><span>Participação no gráfico</span><b>${fmtPct(share)}</b></div>
+      <div class="tooltip-divider"></div>
+      ${rows}
+      ${concNote}
+    `);
+  }
+
+  function onCategoryHover(evt, category){
+    const records = filtered({skipCategory:true});
+    const catRecords = records.filter(r=>r.category===category);
+    const total = catRecords.reduce((s,r)=>s+r.value,0);
+    const chartTotal = records.reduce((s,r)=>s+r.value,0);
+    const share = chartTotal>0 ? total/chartTotal*100 : 0;
+    const byClient = sumBy(catRecords, r=>r.client);
+    const clients = Array.from(byClient.entries()).sort((a,b)=>b[1]-a[1]);
+    let rows = clients.slice(0,4).map(([c,v])=>`<div class="tooltip-row"><span>${c}</span><b>${fmtBRL(v,0)}</b></div>`).join('');
+    if(clients.length===0) rows = `<div class="tooltip-row"><span>Sem recebimentos nesta categoria, com o filtro atual.</span></div>`;
+    showTooltip(evt, `
+      <p class="tooltip-title">${category}</p>
+      <p class="tooltip-value" style="color:${COLOR.categoria}">${fmtBRL(total)}</p>
+      <div class="tooltip-row"><span>Participação no gráfico</span><b>${fmtPct(share)}</b></div>
+      <div class="tooltip-row"><span>Clientes nesta categoria</span><b>${clients.length}</b></div>
+      <div class="tooltip-divider"></div>
+      ${rows}
+    `);
+  }
+
+  function onClientHover(evt, client){
+    const chartRecords = filtered({skipClient:true});
+    const clientRecords = chartRecords.filter(r=>r.client===client);
+    const total = clientRecords.reduce((s,r)=>s+r.value,0);
+    const chartTotal = chartRecords.reduce((s,r)=>s+r.value,0);
+    const share = chartTotal>0 ? total/chartTotal*100 : 0;
+    const info = CLIENT_INFO.get(client) || {region:'—',category:'—'};
+    const count = clientRecords.length;
+    let rows = count>0
+      ? `<div class="tooltip-row"><span>Região</span><b>${info.region}</b></div>
+         <div class="tooltip-row"><span>Categoria</span><b>${info.category}</b></div>
+         <div class="tooltip-row"><span>Pagamentos</span><b>${count}</b></div>`
+      : `<div class="tooltip-row"><span>Sem recebimentos deste cliente, com o filtro atual.</span></div>`;
+    showTooltip(evt, `
+      <p class="tooltip-title">${client}</p>
+      <p class="tooltip-value" style="color:${COLOR.ranking}">${fmtBRL(total)}</p>
+      <div class="tooltip-row"><span>Participação no gráfico</span><b>${fmtPct(share)}</b></div>
+      <div class="tooltip-divider"></div>
+      ${rows}
+    `);
+  }
+
+  // -------------------------------------------------------------------
+  // Master render
+  // -------------------------------------------------------------------
+  function renderAll(){
+    // ---- filter panels ----
+    buildFilterPanel('panel-mes', MONTHS, state.selectedMonths, monthHasData, COLOR.mes, toggleMonth, (m)=>MONTH_NAME[m]);
+    buildFilterPanel('panel-regiao', REGIONS_ORDER, state.selectedRegions, regionHasData, COLOR.regiao, toggleRegion);
+    buildFilterPanel('panel-categoria', CATEGORIES_ORDER, state.selectedCategories, categoryHasData, COLOR.categoria, toggleCategory);
+    buildFilterPanel('panel-cliente', CLIENTS_ORDER_ALL, state.selectedClients, clientHasData, COLOR.ranking, toggleClient);
+    updateMselButtonLabel('msel-mes', 'Data', state.selectedMonths, (m)=>MONTH_SHORT[m]);
+    updateMselButtonLabel('msel-regiao', 'Região', state.selectedRegions);
+    updateMselButtonLabel('msel-categoria', 'Categoria', state.selectedCategories);
+    updateMselButtonLabel('msel-cliente', 'Cliente', state.selectedClients, null, 'todos');
+
+    const anyFilter = state.selectedMonths.size>0 || state.selectedRegions.size>0 ||
+                       state.selectedCategories.size>0 || state.selectedClients.size>0;
+    document.getElementById('btn-reset').classList.toggle('hidden', !anyFilter);
+
+    // ---- datasets ----
+    const both = filtered({});                              // KPIs — all four filters applied
+    const forMonthChart = filtered({skipMonth:true});        // ignores month filter only
+    const forRegionChart = filtered({skipRegion:true});      // ignores region filter only
+    const forCategoryChart = filtered({skipCategory:true});  // ignores category filter only
+    const forClientChart = filtered({skipClient:true});      // ignores client filter only
+
+    const grandTotal = both.reduce((s,r)=>s+r.value,0);
+    const count = both.length;
+    const ticket = count>0 ? grandTotal/count : 0;
+
+    // ---- hero ----
+    const heroEl = document.getElementById('hero-total');
+    animateValue(heroEl, grandTotal, (v)=>fmtBRL(v));
+    const heroSub = document.getElementById('hero-sub');
+    if(count===0){
+      heroSub.innerHTML = `Nenhum recebimento encontrado para os filtros atuais.`;
+    } else if(anyFilter){
+      const pctOfAll = TOTAL_ALL>0 ? (grandTotal/TOTAL_ALL*100) : 0;
+      heroSub.innerHTML = `<b>${fmtPct(pctOfAll)}</b> do total do semestre, considerando os filtros ativos · <b>${count}</b> lançamento${count===1?'':'s'}.`;
+    } else {
+      heroSub.innerHTML = `Janeiro a junho de 2026 · <b>${count}</b> lançamentos conciliados.`;
+    }
+
+    // ---- kpi cards ----
+    animateValue(document.getElementById('kpi-count'), count, (v)=>fmtInt(v));
+    animateValue(document.getElementById('kpi-ticket'), ticket, (v)=>fmtBRL(v));
+
+    const monthTotalsBoth = sumBy(both, r=>r.month);
+    let bestMonth = null, bestMonthVal = -1;
+    for(const m of MONTHS){
+      const v = monthTotalsBoth.get(m)||0;
+      if(v>bestMonthVal){ bestMonthVal=v; bestMonth=m; }
+    }
+    const kpiMonthEl = document.getElementById('kpi-month');
+    const kpiMonthSub = document.getElementById('kpi-month-sub');
+    if(count===0 || bestMonthVal<=0){
+      kpiMonthEl.textContent = '—';
+      kpiMonthSub.textContent = 'sem dados no filtro';
+    } else {
+      kpiMonthEl.textContent = MONTH_NAME[bestMonth];
+      kpiMonthSub.textContent = fmtBRL(bestMonthVal);
+    }
+
+    const clientTotalsBoth = sumBy(both, r=>r.client);
+    let bestClient = null, bestClientVal = -1;
+    for(const [c,v] of clientTotalsBoth.entries()){
+      if(v>bestClientVal){ bestClientVal=v; bestClient=c; }
+    }
+    const kpiClientEl = document.getElementById('kpi-client');
+    const kpiClientSub = document.getElementById('kpi-client-sub');
+    if(count===0 || !bestClient){
+      kpiClientEl.textContent = '—';
+      kpiClientSub.textContent = 'sem dados no filtro';
+    } else {
+      kpiClientEl.textContent = bestClient;
+      kpiClientSub.textContent = fmtBRL(bestClientVal);
+    }
+
+    // ---- month chart (always all 6 bars; highlight selected, dim others) ----
+    const monthTotals = sumBy(forMonthChart, r=>r.month);
+    const monthMax = Math.max(1, ...MONTHS.map(m=>monthTotals.get(m)||0));
+    MONTHS.forEach(m=>{
+      const v = monthTotals.get(m)||0;
+      const ref = monthBarRefs[m];
+      ref.fill.style.height = (v/monthMax*100) + '%';
+      ref.val.innerHTML = fmtBarLabel(v);
+      const isSelected = state.selectedMonths.has(m);
+      const dimmed = state.selectedMonths.size>0 && !isSelected;
+      ref.fill.style.background = dimmed ? COLOR.dim : COLOR.mes;
+      ref.fill.style.opacity = dimmed ? .5 : 1;
+      ref.label.style.color = dimmed ? 'var(--ink-3)' : (isSelected ? '#fff' : 'var(--ink-2)');
+      ref.val.style.opacity = v>0 ? (dimmed?.55:1) : .35;
+    });
+
+    // ---- region chart (always all bars; highlight selected, dim others) ----
+    const regionTotals = sumBy(forRegionChart, r=>r.region);
+    const regionMax = Math.max(1, ...REGIONS_ORDER.map(r=>regionTotals.get(r)||0));
+    REGIONS_ORDER.forEach(region=>{
+      const v = regionTotals.get(region)||0;
+      const ref = regionBarRefs[region];
+      ref.fill.style.width = (v/regionMax*100) + '%';
+      ref.val.innerHTML = fmtBarLabel(v);
+      const isSelected = state.selectedRegions.has(region);
+      const dimmed = state.selectedRegions.size>0 && !isSelected;
+      ref.fill.style.background = dimmed ? COLOR.dim : COLOR.regiao;
+      ref.fill.style.opacity = dimmed ? .5 : 1;
+      ref.label.style.color = dimmed ? 'var(--ink-3)' : (isSelected ? '#fff' : 'var(--ink-2)');
+      ref.val.style.opacity = v>0 ? (dimmed?.55:1) : .35;
+    });
+
+    // ---- category chart (always all bars; highlight selected, dim others) ----
+    const categoryTotals = sumBy(forCategoryChart, r=>r.category);
+    const categoryMax = Math.max(1, ...CATEGORIES_ORDER.map(c=>categoryTotals.get(c)||0));
+    CATEGORIES_ORDER.forEach(cat=>{
+      const v = categoryTotals.get(cat)||0;
+      const ref = categoryBarRefs[cat];
+      ref.fill.style.height = (v/categoryMax*100) + '%';
+      ref.val.innerHTML = fmtBarLabel(v);
+      const isSelected = state.selectedCategories.has(cat);
+      const dimmed = state.selectedCategories.size>0 && !isSelected;
+      ref.fill.style.background = dimmed ? COLOR.dim : COLOR.categoria;
+      ref.fill.style.opacity = dimmed ? .5 : 1;
+      ref.label.style.color = dimmed ? 'var(--ink-3)' : (isSelected ? '#fff' : 'var(--ink-2)');
+      ref.val.style.opacity = v>0 ? (dimmed?.55:1) : .35;
+    });
+
+    // ---- ranking chart (always all clients; highlight selected, dim others) ----
+    const clientTotals = sumBy(forClientChart, r=>r.client);
+    const clientMax = Math.max(1, ...CLIENTS_ORDER_ALL.map(c=>clientTotals.get(c)||0));
+    CLIENTS_ORDER_ALL.forEach(client=>{
+      const v = clientTotals.get(client)||0;
+      const ref = clientBarRefs[client];
+      ref.fill.style.width = (v/clientMax*100) + '%';
+      ref.val.innerHTML = fmtBarLabel(v);
+      const isSelected = state.selectedClients.has(client);
+      const dimmed = state.selectedClients.size>0 && !isSelected;
+      ref.fill.style.background = dimmed ? COLOR.dim : COLOR.ranking;
+      ref.fill.style.opacity = dimmed ? .5 : 1;
+      ref.label.style.color = dimmed ? 'var(--ink-3)' : (isSelected ? '#fff' : 'var(--ink-2)');
+      ref.val.style.opacity = v>0 ? (dimmed?.55:1) : .35;
+    });
+  }
+
+  // -------------------------------------------------------------------
+  // Tabs
+  // -------------------------------------------------------------------
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.getElementById('view-painel').classList.toggle('active', tab==='painel');
+      document.getElementById('view-insights').classList.toggle('active', tab==='insights');
+    });
+  });
+
+  // -------------------------------------------------------------------
+  // Background parallax (finishing touch — the gradient reacts to you)
+  // -------------------------------------------------------------------
+  let mouseRaf = null;
+  window.addEventListener('mousemove', (e)=>{
+    if(mouseRaf) return;
+    mouseRaf = requestAnimationFrame(()=>{
+      const nx = (e.clientX / window.innerWidth - 0.5);
+      const ny = (e.clientY / window.innerHeight - 0.5);
+      const b1 = document.getElementById('blob1');
+      const b2 = document.getElementById('blob2');
+      const b3 = document.getElementById('blob3');
+      if(b1) b1.style.transform = `translate(${nx*30}px, ${ny*30}px)`;
+      if(b2) b2.style.transform = `translate(${nx*-40}px, ${ny*25}px)`;
+      if(b3) b3.style.transform = `translate(${nx*22}px, ${ny*-30}px)`;
+      mouseRaf = null;
+    });
+  });
+
+  // -------------------------------------------------------------------
+  // Init
+  // -------------------------------------------------------------------
+  buildMonthChartSkeleton();
+  buildRegionChartSkeleton();
+  buildCategoryChartSkeleton();
+  buildRankingChartSkeleton();
+  renderAll();
+
+})();
+
+</script>
+</body>
+</html>
